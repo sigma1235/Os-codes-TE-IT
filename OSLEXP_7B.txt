@@ -1,0 +1,159 @@
+create ()
+{
+echo "enter database name which you want to be create";
+read db;
+touch $db;
+echo "database successfully created";
+}
+insert ()
+{
+echo "insert a database";
+if [ -z $db ]
+then
+echo "database does not exits please create database first";
+create;
+else
+echo "how many records you want to insert";
+read no;
+for(( i=0; i<no; i++ ))
+do
+echo "enter roll no";
+read rno;
+srno=`grep "^$rno" "$db"`;
+if [ -z $srno ]
+then
+echo "enter name :- ";
+read name;
+echo "subject 1 marks";
+read sub1;
+echo "subject 2 marks";
+read sub2;
+echo "subject 3 marks";
+read sub3;
+avg=$((($sub1+$sub2+$sub3)/3));
+echo "average : $avg";
+record=$rno":"$name":"$sub1":"$sub2":"$sub3":"$avg;
+echo $record >> "$db";
+echo "you enterd record sucessfully";
+else
+echo "record already exist";
+fi
+done
+fi
+}
+delete ()
+{
+echo "you can delete any record from the database which is not required";
+echo "please enter the roll no of record you want to delete";
+read rno;
+recrd=`grep "^$rno" "$db"`;
+if [ -z $recrd ]
+then
+echo "the record of the given roll no is not found in the database";
+echo "please try with another roll no";
+delete;
+else
+recrd1=`grep -v "^$rno" "$db"`;
+echo "$recrd1" > temp.txt ;
+mv temp.txt "$db";
+echo "you have delete the record";
+echo "";
+echo "$recrd";
+echo "";
+echo "record deleted successfully";
+fi
+}
+display ()
+{
+echo "display all records from the given database";
+echo "";
+echo "*****************************************";
+cat $db;
+echo "*****************************************";
+echo "";
+}
+modify ()
+{
+echo " you can modify any record from the given database";
+echo "enter the roll no of the record you want to modify";
+read rno;
+recrd2=`grep "^$rno" "$db"`;
+if [ -z $recrd2 ]
+then
+echo "the record of the given roll no is not found in the database";
+echo "please enter the correct roll no";
+modify
+else
+recrd1=`grep -v "^$rno" "$db"`;
+echo "$recrd1" > temp.txt ;
+mv temp.txt "$db";
+echo "enter the new roll no of student";
+read rno;
+echo "enter the correct name of student";
+read name;
+echo "enter sub 1 corrected marks";
+read sub1;
+echo "enter sub 2 corrected marks";
+read sub2;
+echo "enter sub 3 corrected marks";
+read sub3;
+avd=$((($sub1+$sub2+$sub3)/3));
+echo "avreage : $avg";
+record=$rno";"$name":"$sub1":"$sub2":"$sub3":"$avg;
+echo $record >> "$db";
+echo "record modified successfully";
+echo "modified record is";
+echo "";
+echo "$record";
+echo "";
+fi
+}
+search()
+{
+echo "you can search any specific record from the database";
+echo "enter the roll no of the record you want to search";
+read rno;
+recrd=`grep "^$rno" "$db"`;
+if [ -z $recrd ]
+then
+echo "the record of the given roll no is not found in the database";
+echo "please try another roll no";
+search;
+else
+echo "record of the given roll no is";
+echo "";
+echo "*******************************";
+echo "$recrd";
+echo "*******************************";
+echo "";
+fi
+}
+clear
+while true
+do
+echo "enter choice :-
+1)create
+2)insert
+3)delete
+4)display
+5)modify
+6)search
+7)any key for exit.............";
+read ch;
+case $ch in
+1) create;
+;;
+2) insert;
+;;
+3) delete;
+;;
+4) display;
+;;
+5) modify;
+;;
+6) search;
+;;
+*) echo "wrong choice curent status exit ";
+exit;
+esac;
+done
